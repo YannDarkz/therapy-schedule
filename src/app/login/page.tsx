@@ -20,10 +20,15 @@ export default function Login() {
     setError('');
 
     try {
-      await login(email, password);
-      router.push('/dashboard');
+      const { error } = await login(email, password);
+    if (error) {
+      setError(`${error}`);
+      return; 
+    }
+    router.push('/dashboard');
+      
     } catch (err: any) {
-      setError('Erro ao fazer login');
+      setError(`${err}`);
     } finally {
       setLoading(false);
     }

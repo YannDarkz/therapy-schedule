@@ -1,9 +1,22 @@
-import  { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 const UserSchema = new Schema({
-    email: { type: String, unique: true },
-    password: String,
-    // role: { type: String, default: 'client' },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: { 
+    type: String, unique: true 
+  },
+
+  password: {
+    type: String,
+    required: true,
+  },
+  role:
+  {
+    type: String, default: 'client'
+  },
 
 });
 

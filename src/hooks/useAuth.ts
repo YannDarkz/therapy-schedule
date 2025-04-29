@@ -40,13 +40,13 @@ export function useAuth() {
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: string) => {
+  const register = async (name: string, email: string, password: string, role: string, appointments:[]) => {
     setLoading(true);
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password, role, appointments }),
       });
 
       if (!response.ok) {

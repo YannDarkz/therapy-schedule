@@ -7,6 +7,10 @@ export function useAuth() {
 
   useEffect(() => {
     setLoading(false);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -24,7 +28,7 @@ export function useAuth() {
       }
 
       const data = await response.json();
-
+      localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       return { error: null };
      

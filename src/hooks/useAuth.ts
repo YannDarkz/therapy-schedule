@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { User } from '@/types';
+import type { Appointment, User } from '@/types';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -67,9 +67,44 @@ export function useAuth() {
   };
 
   const logout = () => {
+    localStorage.removeItem('user');
     setUser(null);
     return Promise.resolve();
   };
 
-  return { user, loading, login, register, logout };
+  const scheduleAppointment = async (appointment: Appointment) => {
+    if (!user) {
+      console.error("Usuário não está logado.");
+      return { error: 'Usuário não autenticado' };
+    }
+  
+    try {
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user._id,
+          appointment
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erro ao agendar');
+      }
+  
+      const data = await response.json();
+  
+      // Atualiza o user no estado e no localStorage
+      setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+  
+      return { error: null };
+    } catch (err: any) {
+      console.error("Erro ao agendar:", err.message);
+      return { error: 'Erro ao agendar' };
+    }
+  };
+
+  return { user, loading, login, register, logout, scheduleAppointment };
 }

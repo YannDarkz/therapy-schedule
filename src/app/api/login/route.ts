@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     console.log('Usuário encontrado:', user);
 
     if (!user) {
-      return NextResponse.json({ message: 'Usuário não encontrado123' }, { status: 404 });
+      return NextResponse.json({ message: 'Usuário não encontrado' }, { status: 404 });
     }
 
     if (user.password !== password) {

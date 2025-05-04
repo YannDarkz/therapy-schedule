@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { UserPlus } from 'lucide-react';
-import type { UserRole } from '@/types';
+import type { Appointment, UserRole } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
 
 
@@ -19,6 +19,7 @@ export default function Register() {
     confirmPassword: '',
     name: '',
     role: 'client' as UserRole,
+    
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,9 +30,17 @@ export default function Register() {
       setError('As senhas não coincidem.');
       return;
     }
+    // const mockDefalt:Appointment = {
+    //   id: '1',
+    //   client_id:'456',
+    //   professional: '478',
+    //   date: '2025-05-01T10:00:00',
+    //   status: 'pending',
+    //   created_at: new Date().toISOString()
+    // }
 
     setLoading(true);
-    const { error: registerError } = await register(formData.name, formData.email, formData.password, formData.role);
+    const { error: registerError } = await register(formData.name, formData.email, formData.password, formData.role, []);
 
     if (registerError) {
       setError(registerError);

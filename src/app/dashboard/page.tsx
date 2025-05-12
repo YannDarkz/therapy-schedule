@@ -6,9 +6,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Calendar, Clock, User2, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { Appointment } from '@/types';
+
+
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const [service, setService] = useState('');
+  const [time, setTime] = useState('');
+  const [professional, setProfessional] = useState('');
+  const [date, setDate] = useState('');
+  const { user, logout, scheduleAppointment } = useAuth();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -84,37 +91,81 @@ export default function Dashboard() {
                       <h3 className="text-xl font-bold mb-4">Agendar Consulta</h3>
 
                       <form
-                        onSubmit={(e) => {
+                        onSubmit={async (e) => {
                           e.preventDefault();
-                          // Aqui você pode fazer uma chamada para salvar no backend
-                          setIsModalOpen(false); // Fecha o modal
+
+                          if (!user) {
+                            console.error("Usuário não autenticado");
+                            return;
+                          }
+
+                          const newAppointment: Appointment = {
+                            id: crypto.randomUUID(),
+                            professional,
+                            service,
+                            client_id: user ? user._id : 'sem ID',
+                            date,
+                            time,
+                            status: 'pending',
+                            created_at: new Date().toISOString()
+                          };
+
+                          const { error } = await scheduleAppointment(newAppointment);
+
+                          if (!error) {
+                            console.log('Agendamento salvo!');
+                            setIsModalOpen(false);
+                          } else {
+                            console.error('Erro ao salvar agendamento:', error);
+                          }
+
                         }}
                         className="space-y-4"
                       >
                         <div>
                           <label className="block text-sm font-medium text-gray-700">Categoria</label>
-                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                            <option>Psicologia</option>
-                            <option>Fisioterapia</option>
-                            <option>Nutrição</option>
+                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                            value={service}
+                            onChange={(e) => setService(e.target.value)}>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Psicologia">Psicologia</option>
+                            <option value="Fisioterapia">Fisioterapia</option>
+                            <option value="Nutrição">Nutrição</option>
                           </select>
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700">Horário</label>
-                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                            <option>10:00</option>
-                            <option>14:30</option>
-                            <option>16:00</option>
+                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="10:00">10:00</option>
+                            <option value="14:30">14:30</option>
+                            <option value="16:00">16:00</option>
                           </select>
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700">Profissional</label>
-                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                            <option>Dr. João</option>
-                            <option>Dra. Ana</option>
+                          <select className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                            value={professional}
+                            onChange={(e) => setProfessional(e.target.value)}>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Dr. João">Dr. João</option>
+                            <option value="Dr. Ana">Dra. Ana</option>
                           </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Data</label>
+                          <input
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                          />
                         </div>
 
                         <div className="flex justify-end">

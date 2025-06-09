@@ -95,7 +95,6 @@ export function useAuth() {
   
       const data = await response.json();
   
-      // Atualiza o user no estado e no localStorage
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
   

@@ -30,15 +30,6 @@ export default function Register() {
       setError('As senhas não coincidem.');
       return;
     }
-    // const mockDefalt:Appointment = {
-    //   id: '1',
-    //   client_id:'456',
-    //   professional: '478',
-    //   date: '2025-05-01T10:00:00',
-    //   status: 'pending',
-    //   created_at: new Date().toISOString()
-    // }
-
     setLoading(true);
     const { error: registerError } = await register(formData.name, formData.email, formData.password, formData.role, []);
 

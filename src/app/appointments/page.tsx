@@ -12,9 +12,6 @@ export default function Appointments() {
 
   useEffect(() => {
     if (!loading && user) {
-      console.log('sinceto log', user.appointments);
-      
-      // Se o user vem com agendamentos embutidos no JSON:
       setAppointments(user.appointments || []);
     }
   }, [user, loading]);

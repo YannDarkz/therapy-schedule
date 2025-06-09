@@ -4,7 +4,6 @@ import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Appointment } from '@/types';
 import { useEffect, useState } from 'react';
-import { log } from 'console';
 
 export default function Appointments() {
   const { user, loading } = useAuth();
